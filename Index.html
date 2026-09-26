@@ -1,1 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEET CBT Test</title>
+<style>
+body{font-family:Arial;margin:0;background:#f4f6f8;color:#222}
+header{background:#1769aa;color:white;padding:18px;text-align:center}
+.box{max-width:700px;margin:20px auto;background:white;padding:20px;border-radius:12px}
+input{width:100%;padding:14px;margin:8px 0 15px;box-sizing:border-box;border:1px solid #ccc;border-radius:7px}
+button{background:#1769aa;color:white;border:0;padding:13px 22px;border-radius:7px;font-size:16px}
+.option{display:block;background:#f1f3f5;padding:13px;margin:10px 0;border-radius:7px}
+#test,#result{display:none}
+#timer{font-size:20px;color:red;text-align:right;font-weight:bold}
+</style>
+</head>
 
+<body>
+
+<header>
+<h1>NEET CBT TEST</h1>
+<p>Online Test</p>
+</header>
+
+<div class="box" id="login">
+<h2>Student Details</h2>
+<input id="student" placeholder="Enter Student Name">
+<button onclick="startTest()">Start Test</button>
+</div>
+
+<div class="box" id="test">
+<div id="timer">Time: 10:00</div>
+<h2 id="q"></h2>
+<div id="options"></div>
+<button onclick="nextQuestion()">Next</button>
+</div>
+
+<div class="box" id="result">
+<h2>Test Completed 🎉</h2>
+<h3 id="studentResult"></h3>
+<h2 id="score"></h2>
+<button onclick="location.reload()">Take Test Again</button>
+</div>
+
+<script>
+const questions=[
+{
+q:"Which organelle is known as the powerhouse of the cell?",
+o:["Nucleus","Mitochondria","Ribosome","Golgi body"],
+a:1
+},
+{
+q:"The SI unit of force is:",
+o:["Joule","Watt","Newton","Pascal"],
+a:2
+},
+{
+q:"Photosynthesis mainly occurs in:",
+o:["Mitochondria","Chloroplast","Nucleus","Ribosome"],
+a:1
+},
+{
+q:"What is the molecular formula of water?",
+o:["CO2","H2O","O2","H2"],
+a:1
+},
+{
+q:"Normal human body temperature is approximately:",
+o:["37°C","25°C","42°C","30°C"],
+a:0
+}
+];
+
+let current=0;
+let score=0;
+let time=600;
+let timer;
+
+function startTest(){
+let name=document.getElementById("student").value.trim();
+if(!name){alert("Please enter student name");return}
+document.getElementById("login").style.display="none";
+document.getElementById("test").style.display="block";
+showQuestion();
+
+timer=setInterval(()=>{
+time--;
+let m=Math.floor(time/60);
+let s=time%60;
+document.getElementById("timer").innerText=
+"Time: "+m+":"+(s<10?"0":"")+s;
+if(time<=0){finishTest()}
+},1000);
+}
+
+function showQuestion(){
+let x=questions[current];
+document.getElementById("q").innerText=
+"Q"+(current+1)+". "+x.q;
+
+let html="";
+x.o.forEach((option,i)=>{
+html+=`<label class="option">
+<input type="radio" name="answer" value="${i}" style="width:auto">
+${option}
+</label>`;
+});
+document.getElementById("options").innerHTML=html;
+}
+
+function nextQuestion(){
+let selected=document.querySelector('input[name="answer"]:checked');
+
+if(!selected){
+alert("Please select an answer");
+return;
+}
+
+if(Number(selected.value)===questions[current].a){
+score++;
+}
+
+current++;
+
+if(current>=questions.length){
+finishTest();
+}else{
+showQuestion();
+}
+}
+
+function finishTest(){
+clearInterval(timer);
+document.getElementById("test").style.display="none";
+document.getElementById("result").style.display="block";
+
+let name=document.getElementById("student").value;
+document.getElementById("studentResult").innerText="Student: "+name;
+document.getElementById("score").innerText=
+"Score: "+score+" / "+questions.length;
+}
+</script>
+
+</body>
+</html>
